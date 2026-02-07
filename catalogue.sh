@@ -3,7 +3,7 @@
 USERID=$(id -u)
 LOGS_FOLDER="/var/log/shell-roboshop"
 LOGS_FILE="$LOGS_FOLDER/$0.log"
-Record=mongodb.daws88.online
+Mongo_Host=mongodb.daws88.online
 
 if [ $USERID -ne 0 ]; then
     echo "Please run this script with root user access" | tee -a $LOGS_FILE
@@ -72,7 +72,7 @@ VALIDATE $? "updating repos"
 dnf install mongodb-mongosh -y &>>$LOGS_FILE
 VALIDATE $? "Installing Mobodb client"
 
-mongosh --host $Record </app/db/master-data.js &>>$LOGS_FILE
+mongosh --host $Mongo_Host </app/db/master-data.js &>>$LOGS_FILE
 VALIDATE $? "Loading master data to mongodb"
 
 
