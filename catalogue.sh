@@ -42,30 +42,35 @@ fi
 curl -o /tmp/catalogue.zip https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip 
 VALIDATE $? "Downloading application code" &>> $LOGS_FILE
 
-# cd /app 
-# unzip /tmp/catalogue.zip
-# VALIDATE $? "Unziping code in app directory" &>> $LOGS_FILE
+cd /app 
+VALIDATE $? "Moving app to directory" &>> $LOGS_FILE
 
-# npm install 
-# VALIDATE $? "Installing npm" &>> $LOGS_FILE
+unzip /tmp/catalogue.zip
+VALIDATE $? "Unzipping code" &>> $LOGS_FILE
 
-# systemctl daemon-reload
-# VALIDATE $? "reloading systemd as daemon" &>> $LOGS_FILE
+npm install 
+VALIDATE $? "Installing npm" &>> $LOGS_FILE
 
-# systemctl enable catalogue 
-# VALIDATE $? "Enabling catalogue" &>> $LOGS_FILE
+cp catalogue.service /etc/systemd/system/catalogue.service
+VALIDATE $? "Copying catalogue service" &>> $LOGS_FILE
 
-# systemctl start catalogue
-# VALIDATE $? "Starting catalogue service" &>> $LOGS_FILE
+systemctl daemon-reload
+VALIDATE $? "reloading systemd as daemon" &>> $LOGS_FILE
 
-# cp mongo.repo /etc/yum.repos.d/mongo.repo &>>$LOGS_FILE
-# VALIDATE $? "updating repos"
+systemctl enable catalogue 
+VALIDATE $? "Enabling catalogue" &>> $LOGS_FILE
 
-# dnf install mongodb-mongosh -y &>>$LOGS_FILE
-# VALIDATE $? "Installing Mobodb client"
+systemctl start catalogue
+VALIDATE $? "Starting catalogue service" &>> $LOGS_FILE
 
-# mongosh --host $Record </app/db/master-data.js &>>$LOGS_FILE
-# VALIDATE $? "Loading master data to mongodb"
+cp mongo.repo /etc/yum.repos.d/mongo.repo &>>$LOGS_FILE
+VALIDATE $? "updating repos"
+
+dnf install mongodb-mongosh -y &>>$LOGS_FILE
+VALIDATE $? "Installing Mobodb client"
+
+mongosh --host $Record </app/db/master-data.js &>>$LOGS_FILE
+VALIDATE $? "Loading master data to mongodb"
 
 
 
