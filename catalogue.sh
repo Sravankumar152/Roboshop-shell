@@ -54,23 +54,23 @@ VALIDATE $? "Installing npm" &>> $LOGS_FILE
 cp catalogue.service /etc/systemd/system/catalogue.service
 VALIDATE $? "Copying catalogue service" &>> $LOGS_FILE
 
-systemctl daemon-reload
-VALIDATE $? "reloading systemd as daemon" &>> $LOGS_FILE
+# systemctl daemon-reload
+# VALIDATE $? "reloading systemd as daemon" &>> $LOGS_FILE
 
-systemctl enable catalogue 
-VALIDATE $? "Enabling catalogue" &>> $LOGS_FILE
+# systemctl enable catalogue 
+# VALIDATE $? "Enabling catalogue" &>> $LOGS_FILE
 
-systemctl start catalogue
-VALIDATE $? "Starting catalogue service" &>> $LOGS_FILE
+# systemctl start catalogue
+# VALIDATE $? "Starting catalogue service" &>> $LOGS_FILE
 
-cp mongo.repo /etc/yum.repos.d/mongo.repo &>>$LOGS_FILE
-VALIDATE $? "updating repos"
+# cp mongo.repo /etc/yum.repos.d/mongo.repo &>>$LOGS_FILE
+# VALIDATE $? "updating repos"
 
-dnf install mongodb-mongosh -y &>>$LOGS_FILE
-VALIDATE $? "Installing Mobodb client"
+# dnf install mongodb-mongosh -y &>>$LOGS_FILE
+# VALIDATE $? "Installing Mobodb client"
 
-mongosh --host $Record </app/db/master-data.js &>>$LOGS_FILE
-VALIDATE $? "Loading master data to mongodb"
+# mongosh --host $Record </app/db/master-data.js &>>$LOGS_FILE
+# VALIDATE $? "Loading master data to mongodb"
 
 
 
