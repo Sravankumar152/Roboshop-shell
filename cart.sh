@@ -3,7 +3,6 @@
 USERID=$(id -u)
 LOGS_FOLDER="/var/log/shell-roboshop"
 LOGS_FILE="$LOGS_FOLDER/$0.log"
-Directory=$PWD
 #Mongo_Host=mongodb.daws88.online
 #Redis_Host=redis.daws88.online
 
@@ -59,7 +58,7 @@ VALIDATE $? "Unziping code"
 npm install &>> $LOGS_FILE
 VALIDATE $? "Installing dependencies"
 
-cp $PWD/cart.service /etc/systemd/system/cart.service &>> $LOGS_FILE
+cp /home/ec2-user/Roboshop-shell//cart.service /etc/systemd/system/cart.service &>> $LOGS_FILE
 VALIDATE $? "Copying files in cart servcie"
 
 systemctl daemon-reload &>> $LOGS_FILE
