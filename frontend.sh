@@ -3,7 +3,6 @@
 USERID=$(id -u)
 LOGS_FOLDER="/var/log/shell-roboshop"
 LOGS_FILE="$LOGS_FOLDER/$0.log"
-DIR=$PWD
 
 if [ $USERID -ne 0 ]; then
     echo "Please run this script with root user access" | tee -a $LOGS_FILE
@@ -40,7 +39,7 @@ VALIDATE $? "Extracting application in nginx html directory"
 rm -rf /etc/nginx/nginx.conf
 VALIDATE $? "removing default nginx conf"
 
-cp $PWD/nginx.conf /etc/nginx/nginx.conf
+cp /home/ec2-user/Roboshop-shell/nginx.conf /etc/nginx/nginx.conf
 VALIDATE $? "copying modified nginx.conf "
 
 systemctl enable nginx 
