@@ -57,14 +57,14 @@ VALIDATE $? "Installing npm" &>> $LOGS_FILE
 cp /home/ec2-user/Roboshop-shell/catalogue.service /etc/systemd/system/catalogue.service
 VALIDATE $? "Copying catalogue service" &>> $LOGS_FILE
 
-# systemctl daemon-reload
-# VALIDATE $? "reloading systemd as daemon" &>> $LOGS_FILE
+systemctl daemon-reload
+VALIDATE $? "reloading systemd as daemon" &>> $LOGS_FILE
 
-# systemctl enable catalogue 
-# VALIDATE $? "Enabling catalogue" &>> $LOGS_FILE
+systemctl enable catalogue 
+VALIDATE $? "Enabling catalogue" &>> $LOGS_FILE
 
-# systemctl start catalogue
-# VALIDATE $? "Starting catalogue service" &>> $LOGS_FILE
+systemctl start catalogue
+VALIDATE $? "Starting catalogue service" &>> $LOGS_FILE
 
 # cp mongo.repo /etc/yum.repos.d/mongo.repo &>>$LOGS_FILE
 # VALIDATE $? "updating repos"
