@@ -66,14 +66,14 @@ VALIDATE $? "Enabling catalogue" &>> $LOGS_FILE
 systemctl start catalogue
 VALIDATE $? "Starting catalogue service" &>> $LOGS_FILE
 
-# cp mongo.repo /etc/yum.repos.d/mongo.repo &>>$LOGS_FILE
-# VALIDATE $? "updating repos"
+cp /home/ec2-user/Roboshop-shell/mongo.repo /etc/yum.repos.d/mongo.repo &>>$LOGS_FILE
+VALIDATE $? "updating repos"
 
-# dnf install mongodb-mongosh -y &>>$LOGS_FILE
-# VALIDATE $? "Installing Mobodb client"
+dnf install mongodb-mongosh -y &>>$LOGS_FILE
+VALIDATE $? "Installing Mobodb client"
 
-# mongosh --host $Record </app/db/master-data.js &>>$LOGS_FILE
-# VALIDATE $? "Loading master data to mongodb"
+mongosh --host $Record </app/db/master-data.js &>>$LOGS_FILE
+VALIDATE $? "Loading master data to mongodb"
 
 
 
