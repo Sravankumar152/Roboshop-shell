@@ -22,20 +22,20 @@ VALIDATE(){
     fi
 }
 
-cp mongo.repo /etc/yum.repos.d/mongo.repo
+cp mongo.repo /etc/yum.repos.d/mongo.repo &>>$LOGS_FILE
 VALIDATE $? "updating repos"
 
-dnf install mongodb-org -y 
+dnf install mongodb-org -y &>>$LOGS_FILE
 VALIDATE $? "Installing Mongodb"
 
-systemctl enable mongod 
+systemctl enable mongod &>>$LOGS_FILE
 VALIDATE $? "Enabling Mongodb"
 
-systemctl start mongod 
+systemctl start mongod &>>$LOGS_FILE 
 VALIDATE $? "Starting Mongodb"
 
-sed -i 's/127.0.0.1/0.0.0.0/g' /etc/mongod.conf
+sed -i 's/127.0.0.1/0.0.0.0/g' /etc/mongod.conf &>>$LOGS_FILE
 VALIDATE $? "Updating mongodb config"
 
-systemctl restart mongod
+systemctl restart mongod &>>$LOGS_FILE
 VALIDATE $? "Mongodb Started"
