@@ -30,42 +30,42 @@ VALIDATE $? "Enabling Nodejs" &>> $LOGS_FILE
 dnf install nodejs -y
 VALIDATE $? "Installing Nodejs" &>> $LOGS_FILE
 
-mkdir /app 
+mkdir -p /app 
 VALIDATE $? "Creating app directory" &>> $LOGS_FILE
-
-useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop
-VALIDATE $? "Creating app user" &>> $LOGS_FILE
+if [ $? -ne 0 ]; then
+    useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop
+    VALIDATE $? "Creating app user" &>> $LOGS_FILE
+else
+    echo "User already exist....skipping"
+fi
 
 curl -o /tmp/catalogue.zip https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip 
 VALIDATE $? "Downloading application code" &>> $LOGS_FILE
 
-cd /app 
-unzip /tmp/catalogue.zip
-VALIDATE $? "Unziping code in app directory" &>> $LOGS_FILE
+# cd /app 
+# unzip /tmp/catalogue.zip
+# VALIDATE $? "Unziping code in app directory" &>> $LOGS_FILE
 
-npm install 
-VALIDATE $? "Installing npm" &>> $LOGS_FILE
+# npm install 
+# VALIDATE $? "Installing npm" &>> $LOGS_FILE
 
-sed -i 's/<MONGODB-SERVER-IPADDRESS>/mongodb.daws88.online/g' /etc/systemd/system/catalogue.service &>>$LOGS_FILE
-VALIDATE $? "updating systemctl" &>> $LOGS_FILE
+# systemctl daemon-reload
+# VALIDATE $? "reloading systemd as daemon" &>> $LOGS_FILE
 
-systemctl daemon-reload
-VALIDATE $? "reloading systemd as daemon" &>> $LOGS_FILE
+# systemctl enable catalogue 
+# VALIDATE $? "Enabling catalogue" &>> $LOGS_FILE
 
-systemctl enable catalogue 
-VALIDATE $? "Enabling catalogue" &>> $LOGS_FILE
+# systemctl start catalogue
+# VALIDATE $? "Starting catalogue service" &>> $LOGS_FILE
 
-systemctl start catalogue
-VALIDATE $? "Starting catalogue service" &>> $LOGS_FILE
+# cp mongo.repo /etc/yum.repos.d/mongo.repo &>>$LOGS_FILE
+# VALIDATE $? "updating repos"
 
-cp mongo.repo /etc/yum.repos.d/mongo.repo &>>$LOGS_FILE
-VALIDATE $? "updating repos"
+# dnf install mongodb-mongosh -y &>>$LOGS_FILE
+# VALIDATE $? "Installing Mobodb client"
 
-dnf install mongodb-mongosh -y &>>$LOGS_FILE
-VALIDATE $? "Installing Mobodb client"
-
-mongosh --host $Record </app/db/master-data.js &>>$LOGS_FILE
-VALIDATE $? "Loading master data to mongodb"
+# mongosh --host $Record </app/db/master-data.js &>>$LOGS_FILE
+# VALIDATE $? "Loading master data to mongodb"
 
 
 
