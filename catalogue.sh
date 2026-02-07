@@ -45,7 +45,7 @@ VALIDATE $? "Downloading application code" &>> $LOGS_FILE
 cd /app 
 VALIDATE $? "Moving app to directory" &>> $LOGS_FILE
 
-rm -f /app/*
+rm -rf /app/*
 VALIDATE $? "Removing all files" &>> $LOGS_FILE
 
 unzip /tmp/catalogue.zip
