@@ -45,13 +45,16 @@ VALIDATE $? "Downloading application code" &>> $LOGS_FILE
 cd /app 
 VALIDATE $? "Moving app to directory" &>> $LOGS_FILE
 
+rm -f /app/*
+VALIDATE $? "Removing all files" &>> $LOGS_FILE
+
 unzip /tmp/catalogue.zip
 VALIDATE $? "Unzipping code" &>> $LOGS_FILE
 
 npm install 
 VALIDATE $? "Installing npm" &>> $LOGS_FILE
 
-cp catalogue.service /etc/systemd/system/catalogue.service
+cp /home/ec2-user/Roboshop-shell/catalogue.service /etc/systemd/system/catalogue.service
 VALIDATE $? "Copying catalogue service" &>> $LOGS_FILE
 
 # systemctl daemon-reload
