@@ -52,7 +52,7 @@ curl -L -o /tmp/user.zip https://roboshop-artifacts.s3.amazonaws.com/user-v3.zip
 VALIDATE $? "Downloading zip file in temp"
 
 cd /app 
-unzip /tmp/user.zip &>> LOGS_FILE
+unzip /tmp/user.zip &>> $LOGS_FILE
 VALIDATE $? "Unzipping code"
 
 npm install &>> $LOGS_FILE
