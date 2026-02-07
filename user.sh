@@ -51,7 +51,12 @@ VALIDATE $? "creating directory"
 curl -L -o /tmp/user.zip https://roboshop-artifacts.s3.amazonaws.com/user-v3.zip &>> $LOGS_FILE
 VALIDATE $? "Downloading zip file in temp"
 
-cd /app 
+rm -rf /app/* &>> $LOGS_FILE
+VALIDATE $? "Deleting files in repo"
+
+cd /app &>> $LOGS_FILE
+VALIDATE $? "Changing directory"
+
 unzip /tmp/user.zip &>> $LOGS_FILE
 VALIDATE $? "Unzipping code"
 
