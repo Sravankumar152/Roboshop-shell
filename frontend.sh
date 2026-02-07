@@ -40,7 +40,7 @@ VALIDATE $? "Extracting application in nginx html directory"
 rm -rf /etc/nginx/nginx.conf
 VALIDATE $? "removing default nginx conf"
 
-cp $PWD/nginx.conf /etc/nginx/nginx.conf
+cp /home/ec2-user/Roboshop-shell/nginx.conf /etc/nginx/nginx.conf
 VALIDATE $? "copying modified nginx.conf "
 
 systemctl enable nginx 
