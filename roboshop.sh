@@ -1,7 +1,7 @@
 #!/bin/bash
 
-SECURITY_GROUP_ID="sg-0439749f7885872a1"
-AMI_ID="ami-0220d79f3f480ecf5"
+SECURITY_GROUP_ID="sg-0439749f7885872a1"                                                                                                                                                       │
+AMI_ID="ami-0220d79f3f480ecf5" 
 ZONE_ID="Z08836952WMRI129YL5JF"
 DOMAIN_NAME="daws88.online"
 
