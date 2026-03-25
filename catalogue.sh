@@ -1,85 +1,28 @@
 #!/bin/bash
 
-USERID=$(id -u)
-LOGS_FOLDER="/var/log/shell-roboshop"
-LOGS_FILE="$LOGS_FOLDER/$0.log"
+source ./common.sh
+
 Mongo_Host=mongodb.daws88.online
 
-if [ $USERID -ne 0 ]; then
-    echo "Please run this script with root user access" | tee -a $LOGS_FILE
-    exit 1
-fi
+CHECK_ROOT
+INITIALIZE_LOGGING
 
-mkdir -p $LOGS_FOLDER
+INSTALL_NODEJS
+CREATE_ROBOSHOP_USER
+SETUP_APP_DIR
+CLEAN_APP_DIR
+DOWNLOAD_AND_EXTRACT "catalogue" "https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip"
 
-VALIDATE(){
-    if [ $1 -ne 0 ]; then
-        echo "$2 ... FAILURE" | tee -a $LOGS_FILE
-        exit 1
-    else
-        echo "$2 ... SUCCESS" | tee -a $LOGS_FILE
-    fi
-}
+npm install &>>$LOGS_FILE
+VALIDATE $? "Installing dependencies"
 
-dnf module disable nodejs -y
-VALIDATE $? "Disabling Nodejs" &>> $LOGS_FILE
+SYSTEMD_SETUP "catalogue"
 
-dnf module enable nodejs:20 -y
-VALIDATE $? "Enabling Nodejs" &>> $LOGS_FILE
-
-dnf install nodejs -y
-VALIDATE $? "Installing Nodejs" &>> $LOGS_FILE
-
-mkdir -p /app 
-VALIDATE $? "Creating app directory" &>> $LOGS_FILE
-if [ $? -ne 0 ]; then
-    useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop
-    VALIDATE $? "Creating app user" &>> $LOGS_FILE
-else
-    echo "User already exist....skipping"
-fi
-
-curl -o /tmp/catalogue.zip https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip 
-VALIDATE $? "Downloading application code" &>> $LOGS_FILE
-
-cd /app 
-VALIDATE $? "Moving app to directory" &>> $LOGS_FILE
-
-rm -rf /app/*
-VALIDATE $? "Removing all files" &>> $LOGS_FILE
-
-unzip /tmp/catalogue.zip
-VALIDATE $? "Unzipping code" &>> $LOGS_FILE
-
-npm install 
-VALIDATE $? "Installing npm" &>> $LOGS_FILE
-
-cp /home/ec2-user/Roboshop-shell/catalogue.service /etc/systemd/system/catalogue.service
-VALIDATE $? "Copying catalogue service" &>> $LOGS_FILE
-
-systemctl daemon-reload
-VALIDATE $? "reloading systemd as daemon" &>> $LOGS_FILE
-
-systemctl enable catalogue 
-VALIDATE $? "Enabling catalogue" &>> $LOGS_FILE
-
-systemctl start catalogue
-VALIDATE $? "Starting catalogue service" &>> $LOGS_FILE
-
-cp /home/ec2-user/Roboshop-shell/mongo.repo /etc/yum.repos.d/mongo.repo &>>$LOGS_FILE
-VALIDATE $? "updating repos"
+cp $(pwd)/mongo.repo /etc/yum.repos.d/mongo.repo &>>$LOGS_FILE
+VALIDATE $? "Updating mongo repo"
 
 dnf install mongodb-mongosh -y &>>$LOGS_FILE
-VALIDATE $? "Installing Mobodb client"
+VALIDATE $? "Installing Mongodb client"
 
 mongosh --host $Mongo_Host </app/db/master-data.js &>>$LOGS_FILE
 VALIDATE $? "Loading master data to mongodb"
-
-
-
-
-
-
-
-
-

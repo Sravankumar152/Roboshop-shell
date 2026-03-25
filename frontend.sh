@@ -1,48 +1,33 @@
 #!/bin/bash
 
-USERID=$(id -u)
-LOGS_FOLDER="/var/log/shell-roboshop"
-LOGS_FILE="$LOGS_FOLDER/$0.log"
+source ./common.sh
 
-if [ $USERID -ne 0 ]; then
-    echo "Please run this script with root user access" | tee -a $LOGS_FILE
-    exit 1
-fi
+CHECK_ROOT
+INITIALIZE_LOGGING
 
-mkdir -p $LOGS_FOLDER
+dnf module disable nginx -y &>>$LOGS_FILE
+VALIDATE $? "Disabling default nginx"
 
-VALIDATE(){
-    if [ $1 -ne 0 ]; then
-        echo "$2 ... FAILURE" | tee -a $LOGS_FILE
-        exit 1
-    else
-        echo "$2 ... SUCCESS" | tee -a $LOGS_FILE
-    fi
-}
+dnf module enable nginx:1.24 -y &>>$LOGS_FILE
+VALIDATE $? "Enabling nginx:1.24"
 
-dnf module list nginx
-dnf module disable nginx -y
-dnf module enable nginx:1.24 -y
-dnf install nginx -y
-VALIDATE $? "Installing Nginx" &>> $LOGS_FILE
+dnf install nginx -y &>>$LOGS_FILE
+VALIDATE $? "Installing Nginx"
 
-curl -o /tmp/frontend.zip https://roboshop-artifacts.s3.amazonaws.com/frontend-v3.zip
-VALIDATE $? "Downloading Frontend" &>> $LOGS_FILE
+rm -rf /usr/share/nginx/html/* &>>$LOGS_FILE
+VALIDATE $? "Removing default nginx files"
 
-rm -rf /usr/share/nginx/html/* 
-VALIDATE "removing default nginx files" &>> $LOGS_FILE
+curl -L -o /tmp/frontend.zip https://roboshop-artifacts.s3.amazonaws.com/frontend-v3.zip &>>$LOGS_FILE
+VALIDATE $? "Downloading Frontend code"
 
-cd /usr/share/nginx/html 
-unzip /tmp/frontend.zip
-VALIDATE $? "Extracting application in nginx html directory"
+cd /usr/share/nginx/html &>>$LOGS_FILE
+unzip /tmp/frontend.zip &>>$LOGS_FILE
+VALIDATE $? "Extracting application code"
 
-rm -rf /etc/nginx/nginx.conf
-VALIDATE $? "removing default nginx conf"
+cp $(pwd)/nginx.conf /etc/nginx/nginx.conf &>>$LOGS_FILE
+VALIDATE $? "Copying modified nginx.conf"
 
-cp /home/ec2-user/Roboshop-shell/nginx.conf /etc/nginx/nginx.conf
-VALIDATE $? "copying modified nginx.conf "
-
-systemctl enable nginx 
-systemctl start nginx 
-systemctl restart nginx 
-VALIDATE $? "starting nginx"
+systemctl enable nginx &>>$LOGS_FILE
+systemctl start nginx &>>$LOGS_FILE
+systemctl restart nginx &>>$LOGS_FILE
+VALIDATE $? "Starting Nginx"
