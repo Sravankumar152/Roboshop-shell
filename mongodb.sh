@@ -5,7 +5,7 @@ source ./common.sh
 CHECK_ROOT
 INITIALIZE_LOGGING
 
-cp $(pwd)/mongo.repo /etc/yum.repos.d/mongo.repo &>>$LOGS_FILE
+cp $(dirname $0)/mongo.repo /etc/yum.repos.d/mongo.repo &>>$LOGS_FILE
 VALIDATE $? "Updating mongo repo"
 
 dnf install mongodb-org -y &>>$LOGS_FILE

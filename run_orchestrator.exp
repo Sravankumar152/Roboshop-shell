@@ -1,0 +1,16 @@
+#!/usr/bin/expect -f
+set timeout 1800
+set host [lindex $argv 0]
+set user "ec2-user"
+set password "DevOps321"
+
+spawn ssh -o StrictHostKeyChecking=no $user@$host "chmod +x orchestrator.sh && ./orchestrator.sh"
+expect {
+    -nocase "password:" {
+        send "$password\r"
+        exp_continue
+    }
+    eof
+}
+catch wait result
+exit [lindex $result 3]

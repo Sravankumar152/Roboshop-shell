@@ -1,0 +1,15 @@
+#!/usr/bin/expect -f
+set timeout 10
+set host [lindex $argv 0]
+set user "ec2-user"
+set password "DevOps321"
+log_user 1
+
+spawn ssh -o StrictHostKeyChecking=no $user@$host "hostname"
+expect {
+    -nocase "password:" {
+        send "$password\r"
+        exp_continue
+    }
+    eof
+}

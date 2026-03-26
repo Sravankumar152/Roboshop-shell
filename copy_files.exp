@@ -1,0 +1,16 @@
+#!/usr/bin/expect -f
+set timeout 60
+set host [lindex $argv 0]
+set user "ec2-user"
+set password "DevOps321"
+
+spawn scp -o StrictHostKeyChecking=no common.sh mongodb.sh mongo.repo redis.sh rabbitmq.sh rabbitmq.repo mysql.sh catalogue.sh catalogue.service user.sh user.service cart.sh cart.service shipping.sh shipping.service payment.sh payment.service frontend.sh nginx.conf $user@$host:/home/ec2-user/
+expect {
+    -nocase "password:" {
+        send "$password\r"
+        exp_continue
+    }
+    eof
+}
+catch wait result
+exit [lindex $result 3]

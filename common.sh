@@ -2,7 +2,7 @@
 
 USERID=$(id -u)
 TIMESTAMP=$(date +%F-%H-%M-%S)
-SCRIPT_NAME=$(echo $0 | cut -d "." -f1)
+SCRIPT_NAME=$(basename $0 | cut -d "." -f1)
 LOGS_FOLDER="/var/log/shell-roboshop"
 LOGS_FILE="$LOGS_FOLDER/$SCRIPT_NAME-$TIMESTAMP.log"
 
@@ -79,7 +79,7 @@ INSTALL_NODEJS(){
 
 SYSTEMD_SETUP(){
     local component=$1
-    cp $(pwd)/$component.service /etc/systemd/system/$component.service &>>$LOGS_FILE
+    cp $(dirname $0)/$component.service /etc/systemd/system/$component.service &>>$LOGS_FILE
     VALIDATE $? "Copying $component service file"
 
     systemctl daemon-reload &>>$LOGS_FILE

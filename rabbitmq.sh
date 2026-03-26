@@ -5,7 +5,7 @@ source ./common.sh
 CHECK_ROOT
 INITIALIZE_LOGGING
 
-cp $(pwd)/rabbitmq.repo /etc/yum.repos.d/rabbitmq.repo &>>$LOGS_FILE
+cp $(dirname $0)/rabbitmq.repo /etc/yum.repos.d/rabbitmq.repo &>>$LOGS_FILE
 VALIDATE $? "Adding rabbitmq.repo"
 
 dnf install rabbitmq-server -y &>>$LOGS_FILE

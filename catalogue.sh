@@ -18,7 +18,7 @@ VALIDATE $? "Installing dependencies"
 
 SYSTEMD_SETUP "catalogue"
 
-cp $(pwd)/mongo.repo /etc/yum.repos.d/mongo.repo &>>$LOGS_FILE
+cp $(dirname $0)/mongo.repo /etc/yum.repos.d/mongo.repo &>>$LOGS_FILE
 VALIDATE $? "Updating mongo repo"
 
 dnf install mongodb-mongosh -y &>>$LOGS_FILE
